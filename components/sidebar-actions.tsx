@@ -42,13 +42,11 @@ import {
 interface SidebarActionsProps {
   chat: Chat
   removeChat: (args: { id: string; path: string }) => ServerActionResult<void>
-  shareChat: (chat: Chat) => ServerActionResult<Chat>
 }
 
 export function SidebarActions({
   chat,
-  removeChat,
-  shareChat
+  removeChat
 }: SidebarActionsProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
@@ -82,20 +80,7 @@ export function SidebarActions({
   return (
     <>
       <div className="space-x-1">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              disabled
-              variant="ghost"
-              className="h-6 w-6 p-0 hover:bg-background"
-              onClick={() => setShareDialogOpen(true)}
-            >
-              <IconShare />
-              <span className="sr-only">Share</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Share chat</TooltipContent>
-        </Tooltip>
+       
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -111,67 +96,7 @@ export function SidebarActions({
           <TooltipContent>Delete chat</TooltipContent>
         </Tooltip>
       </div>
-      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Share link to chat</DialogTitle>
-            <DialogDescription>
-              Anyone with the URL will be able to view the shared chat.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-1 rounded-md border p-4 text-sm">
-            <div className="font-medium">{chat.title}</div>
-            <div className="text-muted-foreground">
-              {formatDate(chat.createdAt)} · {chat.messages.length} messages
-            </div>
-          </div>
-          <DialogFooter className="items-center">
-            {chat.sharePath && (
-              <Link
-                href={chat.sharePath}
-                className={cn(
-                  badgeVariants({ variant: 'secondary' }),
-                  'mr-auto'
-                )}
-                target="_blank"
-              >
-                <IconUsers className="mr-2" />
-                {chat.sharePath}
-              </Link>
-            )}
-            <Button
-              disabled
-              onClick={() => {
-                startShareTransition(async () => {
-                  if (chat.sharePath) {
-                    await new Promise(resolve => setTimeout(resolve, 500))
-                    copyShareLink(chat)
-                    return
-                  }
-
-                  const result = await shareChat(chat)
-
-                  if (result && 'error' in result) {
-                    toast.error(result.error)
-                    return
-                  }
-
-                  copyShareLink(result)
-                })
-              }}
-            >
-              {isSharePending ? (
-                <>
-                  <IconSpinner className="mr-2 animate-spin" />
-                  Copying...
-                </>
-              ) : (
-                <>Copy link</>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+    
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
