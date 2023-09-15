@@ -85,6 +85,7 @@ export function SidebarActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
+              disabled
               variant="ghost"
               className="h-6 w-6 p-0 hover:bg-background"
               onClick={() => setShareDialogOpen(true)}
@@ -139,7 +140,7 @@ export function SidebarActions({
               </Link>
             )}
             <Button
-              disabled={isSharePending}
+              disabled
               onClick={() => {
                 startShareTransition(async () => {
                   if (chat.sharePath) {
