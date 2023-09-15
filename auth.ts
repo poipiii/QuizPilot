@@ -24,7 +24,7 @@ export const {
   auth,
   CSRF_experimental // will be removed in future
 } = NextAuth({
-  providers: [GitHub({ clientId: process.env.AUTH_GITHUB_ID_DEV, clientSecret: process.env.AUTH_GITHUB_SECRET_DEV })],
+  providers: [GitHub(gh_oauth_config)],
   callbacks: {
     jwt({ token, profile }) {
       if (profile) {
